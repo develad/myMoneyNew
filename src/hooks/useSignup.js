@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { projectAuth } from "../firebase/config";
 
 //importing the useContext hook so we can use the dispatch function
@@ -6,6 +6,8 @@ import { projectAuth } from "../firebase/config";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 export const useSignup = () => {
+  const [isCancelled, setIsCancelled] = useState(false);
+
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -34,14 +36,23 @@ export const useSignup = () => {
       //dispatch login action by passing an object with a type and a payload
       dispatch({ type: "LOGIN", payload: res.user });
 
-      setIsPending(false);
-      setError(null);
+      if (!isCancelled) {
+        setIsPending(false);
+        setError(null);
+      }
     } catch (err) {
-      console.log(err.message);
-      setError(err.message);
-      setIsPending(false);
+      if (!isCancelled) {
+        console.log(err.message);
+        setError(err.message);
+        setIsPending(false);
+      }
     }
   };
+
+  useEffect(() => {
+    //cleanup function in case the user is switching to another page while logging out so the state will not update and will not cause a memory leak error
+    return () => setIsCancelled(true);
+  }, []);
 
   return { error, isPending, signup };
 };
