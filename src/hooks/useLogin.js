@@ -8,7 +8,7 @@ export const useLogin = () => {
   const [error, setError] = useState(null);
   const { dispatch } = useAuthContext();
 
-  const login = async () => {
+  const login = async (email, password) => {
     setError(null);
     setIsPending(true);
 
