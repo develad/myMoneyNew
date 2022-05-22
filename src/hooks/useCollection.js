@@ -5,6 +5,7 @@ export const useCollection = (collection) => {
   const [documents, setDocuments] = useState(null);
   const [error, setError] = useState(null);
 
+  //using useEffect to invoke the function the moment the component mount
   useEffect(() => {
     let ref = projectFirestore.collection(collection);
 
