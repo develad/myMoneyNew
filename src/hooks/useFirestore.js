@@ -31,6 +31,14 @@ const firestoreReducer = (state, action) => {
         error: null,
         document: action.payload,
       };
+    case "DELETED_DOCUMENT":
+      return {
+        success: true,
+        isPending: false,
+        error: null,
+        // document: action.payload,
+        document: null,
+      };
     default:
       return state;
   }
@@ -70,7 +78,19 @@ export const useFirestore = (collection) => {
   };
 
   //delete a document
-  const deleteDocument = async (id) => {};
+  const deleteDocument = async (id) => {
+    dispatch({ type: "IS_PENDING" });
+    try {
+      // const deletedDocument = await ref.doc(id).delete();
+      await ref.doc(id).delete();
+      dispatchifNotCancelled({
+        type: "DELETED_DOCUMENT",
+        // payload: deletedDocument,
+      });
+    } catch (err) {
+      dispatchifNotCancelled({ type: "ERROR", payload: "could not delete" });
+    }
+  };
 
   // Clean up function in case the user is changing the page while trying to update state to unmounted component (can cause a memory leak)
   useEffect(() => {
