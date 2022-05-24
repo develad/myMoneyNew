@@ -15,3 +15,5 @@ service cloud.firestore {
     }
   }
 }
+
+// * Deploy to firebase using the cli using 'firebase deploy --only firestore' command
